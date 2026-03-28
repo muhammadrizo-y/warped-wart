@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.muhammadrizo.warped_wart.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "CorridorNetherWartsRoomMixin",
+    "ExampleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}
