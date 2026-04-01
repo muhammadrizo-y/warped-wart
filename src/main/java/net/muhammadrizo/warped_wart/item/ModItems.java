@@ -39,5 +39,10 @@ public class ModItems {
             entries.addAfter(Items.NETHER_WART,
                     WARPED_WART);
         });
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {
+            entries.addAfter(Items.NETHER_WART,
+                    WARPED_WART);
+        });
     }
 }
