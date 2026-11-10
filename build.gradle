@@ -80,3 +80,11 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for retrieving dependencies.
 	}
 }
+
+// TEMPORARY: print compile classpath for javap verification (remove before commit)
+task printCompileCp {
+	doLast {
+		def cp = sourceSets.main.compileClasspath.asPath
+		new File(rootProject.projectDir, "cp.txt").text = cp
+	}
+}
