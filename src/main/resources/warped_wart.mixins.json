@@ -2,7 +2,9 @@
   "required": true,
   "package": "net.muhammadrizo.warped_wart.mixin",
   "compatibilityLevel": "JAVA_25",
-  "mixins": [],
+  "mixins": [
+    "CastleStalkRoomMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
