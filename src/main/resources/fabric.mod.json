@@ -29,9 +29,9 @@
 		"warped_wart.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.18.5",
-		"minecraft": "~1.21.10",
-		"java": ">=21",
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
 		"fabric-api": "*"
 	}
 }

@@ -1,16 +1,18 @@
 package net.muhammadrizo.warped_wart.block;
 
-import net.minecraft.block.*;
-import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.resources.Identifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
 import net.muhammadrizo.warped_wart.WarpedWart;
 import net.muhammadrizo.warped_wart.item.ModItems;
 
@@ -21,27 +23,27 @@ public class ModBlocks {
             "warped_wart",
             settings -> new NetherWartBlock(settings) {
                 @Override
-                protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
+                protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData) {
                     return new ItemStack(ModItems.WARPED_WART);
                 }
             },
-            AbstractBlock.Settings.create()
-                    .mapColor(MapColor.BRIGHT_TEAL)
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_CYAN)
                     .noCollision()
-                    .ticksRandomly()
-                    .sounds(BlockSoundGroup.NETHER_WART)
-                    .pistonBehavior(PistonBehavior.DESTROY)
+                    .randomTicks()
+                    .sound(SoundType.NETHER_WART)
+                    .pushReaction(PushReaction.IMMOVEABLE)
     );
 
-    private static Block registerWithoutItem(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings) {
-        RegistryKey<Block> blockKey = keyOfBlock(name);
-        Block block = blockFactory.apply(settings.registryKey(blockKey));
+    private static Block registerWithoutItem(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
+        ResourceKey<Block> blockKey = keyOfBlock(name);
+        Block block = blockFactory.apply(settings.setId(blockKey));
 
-        return Registry.register(Registries.BLOCK, blockKey, block);
+        return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
     }
 
-    private static RegistryKey<Block> keyOfBlock(String name) {
-        return RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(WarpedWart.MOD_ID, name));
+    private static ResourceKey<Block> keyOfBlock(String name) {
+        return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(WarpedWart.MOD_ID, name));
     }
 
     public static void init() {
