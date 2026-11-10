@@ -4,7 +4,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.NetherWartBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -17,8 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 /**
  * Replaces half of the vanilla nether wart plants (5 of each of the two
  * 10-plant plots) in the fortress nether-wart corridor room (CastleStalkRoom)
- * with warped wart, and gives every plant a random age, both nether wart and
- * warped wart.
+ * with warped wart.
  *
  * Vanilla 26.3 places the plot through StructurePiece.generateBox, which loops
  * over cells and calls this.placeBlock(level, state, x, y, z, box) with
@@ -34,10 +32,8 @@ import org.spongepowered.asm.mixin.injection.At;
  * always decided the same way, and every reload/world-copy yields the same
  * layout.
  *
- * Ages follow the vanilla random-tick rule (randomTick: age < 3 and
- * random.nextInt(10) == 0 -> age + 1) by pre-rolling a random age in 0..3 for
- * every plant at generation time, so freshly generated rooms show the same
- * mixed maturity as vanilla rooms do after their chunks have ticked.
+ * Aging is left to vanilla's natural random-tick growth; both blocks extend
+ * NetherWartBlock, so planted warts grow normally once their chunk ticks.
  *
  * No direct chunk/world access happens in this mixin, so there is no
  * deadlock on the world-gen thread. Vanilla's own placeBlock path is still
@@ -73,11 +69,9 @@ public abstract class StructurePieceMixin {
             instance instanceof CastleStalkRoom
             && state.getBlock() == Blocks.NETHER_WART
             && index >= 0
+            && warpedwart$isWarpedCell(instance, index)
         ) {
-            if (warpedwart$isWarpedCell(instance, index)) {
-                chosen = ModBlocks.WARPED_WART.defaultBlockState();
-            }
-            chosen = chosen.setValue(NetherWartBlock.AGE, warpedwart$randomAge(instance, x, y, z));
+            chosen = ModBlocks.WARPED_WART.defaultBlockState();
         }
         original.call(instance, level, chosen, x, y, z, box);
     }
@@ -103,8 +97,8 @@ public abstract class StructurePieceMixin {
     /**
      * Deterministic "random half per plot" decision. The 10 indices of a plot
      * are shuffled with a seed derived from the room's bounding-box origin and
-     * a plot-specific salt; the first {@value warpedwart$HALF} shuffled slots
-     * are replaced, so each plot gets exactly 5 warped of 10 plants.
+     * a plot-specific salt; the first 5 shuffled slots are replaced, so each
+     * plot gets exactly 5 warped of 10 plants.
      */
     @Unique
     private static boolean warpedwart$isWarpedCell(StructurePiece piece, int index) {
@@ -129,24 +123,6 @@ public abstract class StructurePieceMixin {
             }
         }
         return false;
-    }
-
-    /**
-     * Pre-rolls the vanilla random-tick growth (age + 1 with a 1 in 10 chance
-     * per tick up to age 3) as one random age in 0..3 for this plant cell,
-     * deterministic per room position. Mirrors NetherWartBlock.AGE (AGE_3,
-     * 0..NetherWartBlock.MAX_AGE) and applies to both nether wart and warped
-     * wart.
-     */
-    @Unique
-    private static int warpedwart$randomAge(StructurePiece piece, int x, int y, int z) {
-        long seed = warpedwart$roomSeed(piece)
-            ^ (((long) (x & 0xFFFF)) << 48)
-            ^ (((long) (y & 0xFF)) << 40)
-            ^ (((long) (z & 0xFFFF)) << 24)
-            ^ 0x5DEECE66DL;
-        java.util.Random rng = new java.util.Random(seed);
-        return rng.nextInt(NetherWartBlock.MAX_AGE + 1);
     }
 
     @Unique
