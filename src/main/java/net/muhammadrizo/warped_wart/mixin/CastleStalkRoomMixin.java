@@ -29,11 +29,11 @@ public abstract class CastleStalkRoomMixin {
         method = "postProcess",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/level/levelgen/structure/StructurePiece;generateBox(Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/levelgen/structure/BoundingBox;IIIIIILnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Z)V"
+            target = "Lnet/minecraft/world/level/levelgen/structure/structures/NetherFortressPieces$CastleStalkRoom;generateBox(Lnet/minecraft/world/level/WorldGenLevel;Lnet/minecraft/world/level/levelgen/structure/BoundingBox;IIIIIILnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Z)V"
         )
     )
     private void warpedwart$swapWart(
-        StructurePiece instance,
+        CastleStalkRoom instance,
         WorldGenLevel level,
         BoundingBox box,
         int x1, int y1, int z1,
