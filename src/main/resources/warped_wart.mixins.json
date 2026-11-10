@@ -3,7 +3,7 @@
   "package": "net.muhammadrizo.warped_wart.mixin",
   "compatibilityLevel": "JAVA_25",
   "mixins": [
-    "StructurePieceMixin"
+    "CastleStalkRoomMixin"
   ],
   "injectors": {
     "defaultRequire": 1
