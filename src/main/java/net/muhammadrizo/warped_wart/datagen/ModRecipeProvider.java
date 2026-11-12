@@ -25,7 +25,8 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         return new RecipeProvider(recipeContext, advancementContext) {
             @Override
             public void buildRecipes() {
-                threeByThreePacker(RecipeCategory.BUILDING_BLOCKS, ModItems.WARPED_WART, Blocks.WARPED_WART_BLOCK);
+                // Mirrors vanilla nether_wart_block: 9 warped wart -> 1 warped wart block.
+                threeByThreePacker(RecipeCategory.BUILDING_BLOCKS, Blocks.WARPED_WART_BLOCK, ModItems.WARPED_WART);
             }
         };
     }
